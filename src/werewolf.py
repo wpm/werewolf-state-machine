@@ -13,6 +13,8 @@ from typing import Any
 
 from pydantic import BaseModel
 from statemachine import State, StateMachine
+
+from state import WerewolfState
 import typer
 
 
@@ -40,6 +42,9 @@ class WerewolfMachine(StateMachine):
     # Transitions
     next = night.to(day) | day.to(night)
     finish = night.to(finished_state) | day.to(finished_state)
+
+    def __init__(self, state: WerewolfState | None = None) -> None:
+        super().__init__(model=state)
 
     # Hooks
     def on_enter_night(self):
@@ -112,7 +117,8 @@ async def stdin_reader(machine: WerewolfMachine) -> None:
 
 
 async def _async_main() -> None:
-    machine = WerewolfMachine()
+    state = WerewolfState(roles={})
+    machine = WerewolfMachine(state)
     await stdin_reader(machine)
 
 
