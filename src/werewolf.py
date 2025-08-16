@@ -1,14 +1,8 @@
 """
-Werewolf – engine-free, interactive skeleton using `python-statemachine`.
+Werewolf
 
 - States: Night (initial), Day, Finished (final)
 - Events: `next()` (Night ↔ Day), `finish()` (→ Finished)
-- No demo producer; the program idles until you type commands.
-
-Setup:
-    python -m venv .venv && source .venv/bin/activate
-    pip install python-statemachine pydantic
-    python werewolf_sm.py
 """
 
 from __future__ import annotations
@@ -21,9 +15,6 @@ from pydantic import BaseModel
 from statemachine import State, StateMachine
 
 
-# ------------------------------
-# Messages
-# ------------------------------
 class Command(StrEnum):
     NEXT = "next"  # Advance Night<->Day
     FINISH = "finish"  # End the game (-> Finished)
@@ -37,9 +28,6 @@ class GameMessage(BaseModel):
     data: dict[str, Any] | None = None  # Reserved for future use
 
 
-# ------------------------------
-# The Werewolf State Machine
-# ------------------------------
 class WerewolfMachine(StateMachine):
     """State machine for game phases only (no player data)."""
 
@@ -68,25 +56,27 @@ class WerewolfMachine(StateMachine):
     def on_enter_finished_state(self):
         print("🏁 Game has reached Finished state. No further moves allowed.")
 
-    # Async-friendly dispatcher
     async def handle_message(self, msg: GameMessage) -> None:
         print(
             f"SM: received {msg.command.value!r} while in state {self.current_state.id}."
         )
-        if msg.command == Command.NEXT:
-            self.next()
-        elif msg.command == Command.FINISH:
-            self.finish()
-        elif msg.command == Command.QUIT:
-            pass
-        else:
-            print(f"SM: unknown command {msg.command!r} (ignored).")
+        match msg.command:
+            case Command.NEXT:
+                self.next()
+            case Command.FINISH:
+                self.finish()
+            case Command.QUIT:
+                pass
+            case _:
+                print(f"SM: unknown command {msg.command!r} (ignored).")
 
 
-# ------------------------------
-# Interactive stdin loop only
-# ------------------------------
 async def stdin_reader(machine: WerewolfMachine) -> None:
+    """
+    Command line interface for the Werewolf game.
+
+    :param machine: Werewolf state machine
+    """
     loop = asyncio.get_running_loop()
     print("\nType commands: `next`, `finish`, `quit`. Ctrl+C to exit.\n")
     print("Initial state:", machine.current_state.id)
