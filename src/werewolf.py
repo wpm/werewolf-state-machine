@@ -48,7 +48,7 @@ class WerewolfMachine(StateMachine):
         print("🌅 Exiting Night → transitioning...")
 
     def on_enter_day(self):
-        print("☀️  Entered Day. (Discussion, accusations, and voting.)")
+        print("☀️ Entered Day. (Discussion, accusations, and voting.)")
 
     def on_exit_day(self):
         print("🌘 Exiting Day → transitioning...")
