@@ -72,13 +72,20 @@ class WerewolfMachine(StateMachine):
 
 
 async def stdin_reader(machine: WerewolfMachine) -> None:
-    """
-    Command line interface for the Werewolf game.
+    """Command line interface for the Werewolf game.
+
+    Accepts the following commands (shortcuts in parentheses):
+
+    - ``next`` (``n``) – advance Night ↔ Day
+    - ``finish`` (``f``) – end the game
+    - ``quit`` (``q``) – exit the loop without a transition
 
     :param machine: Werewolf state machine
     """
     loop = asyncio.get_running_loop()
-    print("\nType commands: `next`, `finish`, `quit`. Ctrl+C to exit.\n")
+    print(
+        "\nType commands: `next` (n), `finish` (f), `quit` (q). Ctrl+C to exit.\n"
+    )
     print("Initial state:", machine.current_state.id)
 
     while True:
@@ -96,7 +103,7 @@ async def stdin_reader(machine: WerewolfMachine) -> None:
             await machine.handle_message(GameMessage(command=Command.QUIT))
             break
         else:
-            print("Unknown command. Use: next | finish | quit")
+            print("Unknown command. Use: next|n | finish|f | quit|q")
 
         if machine.current_state.final:
             print("SM: finished; exiting.")
