@@ -1,0 +1,20 @@
+[project]
+name = "werewolf-state-machine"
+version = "0.1.0"
+description = "Gameplay for the social deception game Werewolf"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic",
+    "python-statemachine",
+    "typer",
+]
+
+[project.scripts]
+werewolf = "werewolf:app"
+
+[dependency-groups]
+dev = [
+    "pytest",
+]

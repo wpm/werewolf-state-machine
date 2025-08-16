@@ -13,6 +13,7 @@ from typing import Any
 
 from pydantic import BaseModel
 from statemachine import State, StateMachine
+import typer
 
 
 class Command(StrEnum):
@@ -110,13 +111,19 @@ async def stdin_reader(machine: WerewolfMachine) -> None:
             break
 
 
-async def main() -> None:
+async def _async_main() -> None:
     machine = WerewolfMachine()
     await stdin_reader(machine)
 
 
-if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        pass
+app = typer.Typer()
+
+
+@app.callback(invoke_without_command=True)
+def main(ctx: typer.Context) -> None:  # pragma: no cover - CLI entry point
+    """Run the interactive Werewolf game."""
+    if ctx.invoked_subcommand is None:
+        try:
+            asyncio.run(_async_main())
+        except KeyboardInterrupt:
+            pass
