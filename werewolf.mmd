@@ -1,0 +1,9 @@
+---
+title: Werewolf
+---
+stateDiagram-v2
+    [*] --> Night: Next
+    Night --> Day: Next
+    Day --> Night: Next
+    Night --> [*]: Finished
+    Day --> [*]: Finished
