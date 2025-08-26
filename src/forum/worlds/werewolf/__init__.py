@@ -190,3 +190,17 @@ class Werewolf(Message):
             known = ", ".join(str(i) for i in sorted(self.known_identity[agent]))
             s.append(f"{agent}. {role} [{known}]")
         return f"{self.phase} {self.day}: " + ", ".join(s)
+
+
+from .machine import WerewolfMachine
+
+__all__ = [
+    "AgentIndex",
+    "Phase",
+    "Role",
+    "Team",
+    "Observation",
+    "Action",
+    "Werewolf",
+    "WerewolfMachine",
+]
